@@ -1,0 +1,11 @@
+<configuration>
+    <input>
+        <net-file value="KCCIntersection.net.xml"/>
+        <route-files value="KCCIntersection.rou.xml"/>
+        <additional-files value="KCCIntersectionConfig.add.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="720000"/>
+    </time>
+</configuration>    

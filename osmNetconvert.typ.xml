@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<types xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/types_file.xsd">
+    <type id="highway.primary" priority="9" numLanes="2" speed="13.89" disallow="pedestrian bicycle"/>
+    <type id="highway.secondary" priority="8" numLanes="2" speed="13.89" disallow="pedestrian bicycle"/>
+    <type id="highway.tertiary" priority="7" numLanes="1" speed="13.89" disallow="pedestrian bicycle"/>
+    <type id="highway.residential" priority="6" numLanes="1" speed="8.33" allow="all"/>
+    <type id="highway.service" priority="5" numLanes="1" speed="5.56" allow="all"/>
+    <type id="highway.unclassified" priority="6" numLanes="1" speed="8.33" allow="all"/>
+    <type id="highway.trunk" priority="11" numLanes="2" speed="27.78" disallow="pedestrian bicycle"/>
+    <type id="highway.trunk_link" priority="10" numLanes="1" speed="22.22" disallow="pedestrian bicycle"/>
+    <type id="highway.primary_link" priority="8" numLanes="1" speed="22.22" disallow="pedestrian bicycle"/>
+    <type id="highway.secondary_link" priority="7" numLanes="1" speed="22.22" disallow="pedestrian bicycle"/>
+    <type id="highway.tertiary_link" priority="6" numLanes="1" speed="22.22" disallow="pedestrian bicycle"/>
+</types>
