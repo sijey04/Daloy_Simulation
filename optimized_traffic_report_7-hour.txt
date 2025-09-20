@@ -1,0 +1,57 @@
+================================================================================
+OPTIMIZED SMART TRAFFIC CONTROL SYSTEM - ANALYSIS REPORT
+Zamboanga KCC Intersection - 7-HOUR Simulation
+Report Generated: 2025-09-20 04:01:10
+================================================================================
+
+EXECUTIVE SUMMARY
+----------------------------------------
+• Simulation Duration: 7-HOUR
+• Data Points Collected: 2,820
+• Average vehicles in network: 16.5
+• Average total queue length: 1.67 vehicles
+• Average waiting time: 0.67 seconds
+• System efficiency score: 9.60/10
+• Queue management rating: Fair
+• Traffic flow rating: Excellent
+
+INTERSECTION PERFORMANCE ANALYSIS
+----------------------------------------
+J1 (Complex Intersection):
+  - Average queue length: 1.24 vehicles
+  - Maximum queue length: 25 vehicles
+  - Average waiting time: 0.75 seconds
+  - Total phase changes: 1,115
+  - Average time between changes: 25.3 seconds
+
+J2 (4-Way Intersection):
+  - Average queue length: 0.43 vehicles
+  - Maximum queue length: 8 vehicles
+  - Average waiting time: 0.59 seconds
+  - Total phase changes: 1,419
+  - Average time between changes: 19.9 seconds
+
+Performance Comparison:
+  - Better queue management: J2
+  - Better waiting time: J2
+  - Queue difference: 0.80 vehicles
+  - Waiting time difference: 0.16 seconds
+
+Traffic Pattern Analysis:
+  - Vehicle count stability (std dev): 7.96
+  - Peak vehicle count: 64
+  - Minimum vehicle count: 1
+
+Optimization Insights:
+  - J1 experiences higher congestion, consider enhanced timing
+  - Excellent waiting times achieved through optimization
+
+================================================================================
+ANALYSIS COMPLETE
+================================================================================
+Files generated during analysis:
+  - optimized_traffic_analysis_extended.png
+  - intersection_comparison_extended.png
+  - optimized_traffic_report_7-hour.txt
+
+Use these visualizations to understand traffic patterns and system performance.

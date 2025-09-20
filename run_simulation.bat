@@ -18,7 +18,7 @@ echo Press Ctrl+C to stop the simulation at any time.
 echo ================================================================
 echo.
 
-python traffic_controller.py
+python optimized_traffic_controller.py
 
 echo.
 echo ================================================================

@@ -1,0 +1,51 @@
+For Intersection 1 (Complex):
+West Approach (coming from Intersection 1):
+det_J1_W1 (for the top lane)
+det_J1_W2 (for the bottom lane)
+East Approach (from the far right):
+det_J1_E1
+det_J1_E2
+det_J1_E3 (Segment Top Lane)
+det_J1_E5 (Segment Top Lane)
+det_J1_E6 (Segment Top Lane)
+det_J1_E4 (Segment Bottom Lane)
+det_J1_E7 (Segment Bottom Lane)
+det_J1_E8 (Segment Bottom Lane)
+North Approach:
+det_J1_N1
+det_J1_N2
+det_J1_N3 (Segment Top Lane)
+det_J1_N4 (Segment Bottom Lane)
+South Approach:
+det_J1_S1
+det_J1_S2
+det_J1_S3 (Segment Top Lane)
+det_J1_S4 (Segment Bottom Lane)
+
+For Intersection 2 (4 Lanes West, 2 Lanes North, 6 Lanes East, 4 Lanes South)
+West Approach: 4 Lanes
+det_J2_W1 (Top lane)
+det_J2_W2 (Top lane)
+det_J2_W3 (Bottom lane)
+det_J2_W4 (Bottom lane) 
+East Approach 6 Lanes:
+det_J2_E1 (Top lane)
+det_J2_E2 (Top lane)
+det_J2_E3 (Top lane)
+det_J2_E4 (Bottom lane)
+det_J2_E5 (Bottom lane)
+det_J2_E6 (Bottom lane)
+North Approach: 2 Lanes
+det_J2_N1 (Top lane)
+det_J2_N2 (Bottom lane)
+South Approach:
+det_J2_S1 (Top lane)
+det_J2_S2 (Top lane)
+det_J2_S3 (Bottom lane)
+det_J2_S4 (Bottom lane)
+
+Traffic Light ID:
+First Intersection
+TLS ID : 1017322684
+Second intersection
+TLS ID: 1017322720
