@@ -1,7 +1,7 @@
 ================================================================================
 OPTIMIZED AI vs BASELINE TRAFFIC CONTROL COMPARISON REPORT
 Zamboanga KCC Intersection Study
-Report Generated: 2025-09-20 17:32:56
+Report Generated: 2025-09-21 00:50:52
 ================================================================================
 
 STUDY OVERVIEW
@@ -13,71 +13,71 @@ This analysis compares two traffic management scenarios:
 TRAFFIC FLOW ANALYSIS
 ----------------------------------------
 Average Vehicles in Network:
-  • Optimized AI System: 36.1 vehicles
-  • Baseline Real-World: 109.7 vehicles
-  • Difference: -73.6 vehicles
+  • Optimized AI System: 198.6 vehicles
+  • Baseline Real-World: 1026.8 vehicles
+  • Difference: -828.2 vehicles
 
 QUEUE PERFORMANCE ANALYSIS
 ----------------------------------------
-Total Network Queue Reduction: +28.4%
-J1 (Complex) Queue Reduction: +4.1%
-J2 (4-Way) Queue Reduction: +67.9%
+Total Network Queue Reduction: +35.0%
+J1 (Complex) Queue Reduction: +30.8%
+J2 (4-Way) Queue Reduction: +41.7%
 
 Detailed Queue Metrics:
-  Optimized Average Queue: 5.97 vehicles
-  Baseline Average Queue: 8.34 vehicles
-  Absolute Reduction: 2.37 vehicles
+  Optimized Average Queue: 18.65 vehicles
+  Baseline Average Queue: 28.69 vehicles
+  Absolute Reduction: 10.04 vehicles
 
 DELAY PERFORMANCE ANALYSIS
 ----------------------------------------
-Network Delay Reduction: +78.0%
-  Optimized Average Delay: 131.70 seconds
-  Baseline Average Delay: 598.10 seconds
-  Absolute Reduction: 466.39 seconds
+Network Delay Reduction: +82.4%
+  Optimized Average Delay: 1303.73 seconds
+  Baseline Average Delay: 7426.52 seconds
+  Absolute Reduction: 6122.79 seconds
 
 EFFICIENCY PERFORMANCE ANALYSIS
 ----------------------------------------
-Travel Time Improvement: +70.9%
-  Optimized Average Travel Time: 191.7 seconds
-  Baseline Average Travel Time: 658.1 seconds
-  Time Savings: 466.4 seconds per trip
+Travel Time Improvement: +81.8%
+  Optimized Average Travel Time: 1363.7 seconds
+  Baseline Average Travel Time: 7486.5 seconds
+  Time Savings: 6122.8 seconds per trip
 
 CONGESTION PERFORMANCE ANALYSIS
 ----------------------------------------
-Throughput Improvement: -67.1%
-  Optimized Throughput: 361.2 vehicles/hour
-  Baseline Throughput: 1096.8 vehicles/hour
-  Additional Capacity: -735.6 vehicles/hour
+Throughput Improvement: +1890.0%
+  Optimized Throughput: 1986.3 vehicles/hour
+  Baseline Throughput: 99.8 vehicles/hour
+  Additional Capacity: 1886.5 vehicles/hour
 
 Congestion Index Analysis:
-  Optimized Congestion: 16.5% vehicles queued
-  Baseline Congestion: 7.6% vehicles queued
-  Congestion Reduction: -8.9 percentage points
+  Optimized Congestion: 9.4% vehicles queued
+  Baseline Congestion: 2.8% vehicles queued
+  Congestion Reduction: -6.6 percentage points
 
 ENVIRONMENTAL IMPACT ANALYSIS
 ----------------------------------------
-CO2 Emissions Reduction: +82.5%
-  Optimized Emissions: 9602.3 grams/hour
-  Baseline Emissions: 54733.4 grams/hour
-  Emission Savings: 45131.0 grams/hour
+CO2 Emissions Reduction: +95.8%
+  Optimized Emissions: 169206.3 grams/hour
+  Baseline Emissions: 4018234.1 grams/hour
+  Emission Savings: 3849027.8 grams/hour
 
 Fuel Efficiency Analysis:
-  Optimized Efficiency Index: 83.8
-  Baseline Efficiency Index: 36.0
-  Efficiency Improvement: 47.8 points
+  Optimized Efficiency Index: 0.0
+  Baseline Efficiency Index: 0.0
+  Efficiency Improvement: 0.0 points
 
 KEY FINDINGS
 ----------------------------------------
-• Comprehensive System Improvement: 64.9%
+• Comprehensive System Improvement: 73.8%
 • Performance Classification: EXCEPTIONAL IMPROVEMENT
 • Recommendation: AI system provides outstanding benefits - immediate implementation recommended
 
 DETAILED PERFORMANCE SUMMARY:
-• Queue Length Reduction: 28.4%
-• Vehicle Delay Reduction: 78.0%
-• Travel Time Improvement: 70.9%
-• Network Throughput Increase: -67.1%
-• CO2 Emissions Reduction: 82.5%
+• Queue Length Reduction: 35.0%
+• Vehicle Delay Reduction: 82.4%
+• Travel Time Improvement: 81.8%
+• Network Throughput Increase: 1890.0%
+• CO2 Emissions Reduction: 95.8%
 
 • The optimized AI system demonstrates measurable improvements across all key metrics
 • Environmental benefits include reduced emissions and improved fuel efficiency

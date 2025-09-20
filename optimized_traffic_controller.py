@@ -19,13 +19,18 @@ else:
 # --- Optimized AI Traffic Controller Class ---
 class OptimizedTrafficController:
     def __init__(self):
-        # OPTIMIZED PARAMETERS FOR REALISTIC TRAFFIC
-        self.camera_rotation_speed = 2  # Keep fast camera rotation
-        self.prediction_window = 15     # Longer prediction window
+        # OPTIMIZED PARAMETERS FOR REALISTIC TRAFFIC - FASTER CAMERA ROTATION
+        self.camera_rotation_speed = 10  # Increased: 10° per step for faster rotation
+        self.prediction_window = 15      # Longer prediction window
         
-        # IMPROVED TIMING PARAMETERS
-        self.min_green_time = 20        # INCREASED: 5s → 20s for proper clearing
-        self.max_green_time = 90        # INCREASED: 60s → 90s for heavy loads
+        # 360° ROTATING CAMERA PARAMETERS - NORMAL ROTATION
+        self.j1_camera_angle = 0        # Current J1 camera angle (0-360°)
+        self.j2_camera_angle = 180      # Current J2 camera angle (start opposite)
+        self.field_of_view = 90         # Camera field of view in degrees
+        
+        # IMPROVED TIMING PARAMETERS - SAME RESPONSE AS BASELINE
+        self.min_green_time = 20        # Restored: 20s minimum green time
+        self.max_green_time = 90        # Restored: 90s maximum green time
         self.yellow_time = 3
         
         # Phase timing tracking
@@ -47,48 +52,70 @@ class OptimizedTrafficController:
         self.queue_clearing_bonus = 3.0 # NEW: Bonus for clearing queues
         
     def get_360_camera_data(self, intersection, step):
-        """Enhanced 360° camera system with optimized data collection"""
+        """TRUE 360° ROTATING CAMERA SYSTEM - Like Your Diagrams!"""
+        
+        # Update camera rotation angle
+        if intersection == 'J1':
+            self.j1_camera_angle = (self.j1_camera_angle + self.camera_rotation_speed) % 360
+            camera_angle = self.j1_camera_angle
+        else:  # J2
+            self.j2_camera_angle = (self.j2_camera_angle + self.camera_rotation_speed) % 360
+            camera_angle = self.j2_camera_angle
+        
+        # Determine camera focus areas (like your diagrams)
+        primary_direction, secondary_direction = self.get_camera_focus(camera_angle)
+        
+        # Print rotation status for visibility - FASTER CAMERA UPDATES  
+        if step % 36 == 0:  # Every 36 steps (faster updates for 10° rotation)
+            quadrant = self.get_quadrant_name(camera_angle)
+            print(f"🎥 {intersection} Camera: {camera_angle:.1f}° - {quadrant} | Focus: {primary_direction}(Primary), {secondary_direction}(Secondary)")
+        
         try:
             if intersection == 'J1':
                 # Complete detector coverage for J1 with 4-lane east approach
-                east_detectors = ['det_J1_E1', 'det_J1_E2', 'det_J1_E3', 'det_J1_E4', 
-                                'det_J1_E5', 'det_J1_E6', 'det_J1_E7', 'det_J1_E8', 
-                                'det_J1_E9', 'det_J1_E10']
-                west_detectors = ['det_J1_W1', 'det_J1_W2']
-                north_detectors = ['det_J1_N1', 'det_J1_N2', 'det_J1_N3', 'det_J1_N4']
-                south_detectors = ['det_J1_S1', 'det_J1_S2', 'det_J1_S3', 'det_J1_S4']
+                detectors = {
+                    'E': ['det_J1_E1', 'det_J1_E2', 'det_J1_E3', 'det_J1_E4', 
+                          'det_J1_E5', 'det_J1_E6', 'det_J1_E7', 'det_J1_E8', 
+                          'det_J1_E9', 'det_J1_E10'],
+                    'W': ['det_J1_W1', 'det_J1_W2'],
+                    'N': ['det_J1_N1', 'det_J1_N2', 'det_J1_N3', 'det_J1_N4'],
+                    'S': ['det_J1_S1', 'det_J1_S2', 'det_J1_S3', 'det_J1_S4']
+                }
             else:  # J2
-                east_detectors = ['det_J2_E1', 'det_J2_E2', 'det_J2_E3', 'det_J2_E4', 'det_J2_E5', 'det_J2_E6']
-                west_detectors = ['det_J2_W1', 'det_J2_W2', 'det_J2_W3', 'det_J2_W4']
-                north_detectors = ['det_J2_N1', 'det_J2_N2']
-                south_detectors = ['det_J2_S1', 'det_J2_S2', 'det_J2_S3', 'det_J2_S4']
+                detectors = {
+                    'E': ['det_J2_E1', 'det_J2_E2', 'det_J2_E3', 'det_J2_E4', 'det_J2_E5', 'det_J2_E6'],
+                    'W': ['det_J2_W1', 'det_J2_W2', 'det_J2_W3', 'det_J2_W4'],
+                    'N': ['det_J2_N1', 'det_J2_N2'],
+                    'S': ['det_J2_S1', 'det_J2_S2', 'det_J2_S3', 'det_J2_S4']
+                }
             
-            # Optimized data collection
+            # ROTATING CAMERA DATA COLLECTION WITH VISIBILITY FACTORS
             traffic_data = {}
             
-            # Collect halting vehicles (main metric)
-            traffic_data['E_halting'] = sum(traci.lanearea.getLastStepHaltingNumber(det) for det in east_detectors)
-            traffic_data['W_halting'] = sum(traci.lanearea.getLastStepHaltingNumber(det) for det in west_detectors)
-            traffic_data['N_halting'] = sum(traci.lanearea.getLastStepHaltingNumber(det) for det in north_detectors)
-            traffic_data['S_halting'] = sum(traci.lanearea.getLastStepHaltingNumber(det) for det in south_detectors)
+            for direction in ['E', 'W', 'N', 'S']:
+                # Calculate visibility factor based on camera rotation
+                visibility_factor = self.calculate_camera_visibility(direction, primary_direction, secondary_direction)
+                
+                try:
+                    # Get raw detector data
+                    raw_halting = sum(traci.lanearea.getLastStepHaltingNumber(det) for det in detectors[direction])
+                    raw_total = sum(traci.lanearea.getLastStepVehicleNumber(det) for det in detectors[direction])
+                    raw_waiting = self.calculate_direction_waiting_time(detectors[direction])
+                    
+                    # Apply camera visibility factor (realistic rotation effect)
+                    traffic_data[f'{direction}_halting'] = int(raw_halting * visibility_factor)
+                    traffic_data[f'{direction}_total'] = int(raw_total * visibility_factor)
+                    traffic_data[f'{direction}_waiting'] = raw_waiting * visibility_factor
+                    
+                except Exception as e:
+                    # Camera can't see this direction clearly
+                    traffic_data[f'{direction}_halting'] = 0
+                    traffic_data[f'{direction}_total'] = 0
+                    traffic_data[f'{direction}_waiting'] = 0
             
-            # Collect total vehicle count
-            traffic_data['E_total'] = sum(traci.lanearea.getLastStepVehicleNumber(det) for det in east_detectors)
-            traffic_data['W_total'] = sum(traci.lanearea.getLastStepVehicleNumber(det) for det in west_detectors)
-            traffic_data['N_total'] = sum(traci.lanearea.getLastStepVehicleNumber(det) for det in north_detectors)
-            traffic_data['S_total'] = sum(traci.lanearea.getLastStepVehicleNumber(det) for det in south_detectors)
-            
-            # Calculate waiting times
-            traffic_data['E_waiting'] = self.calculate_direction_waiting_time(east_detectors)
-            traffic_data['W_waiting'] = self.calculate_direction_waiting_time(west_detectors)
-            traffic_data['N_waiting'] = self.calculate_direction_waiting_time(north_detectors)
-            traffic_data['S_waiting'] = self.calculate_direction_waiting_time(south_detectors)
-            
-            # Store in history for trend analysis
-            self.traffic_history[intersection]['E'].append(traffic_data['E_halting'])
-            self.traffic_history[intersection]['W'].append(traffic_data['W_halting'])
-            self.traffic_history[intersection]['N'].append(traffic_data['N_halting'])
-            self.traffic_history[intersection]['S'].append(traffic_data['S_halting'])
+            # Store in history for trend analysis (use primary direction data for most accurate trends)
+            primary_data = traffic_data[f'{primary_direction}_halting']
+            self.traffic_history[intersection][primary_direction].append(primary_data)
             
             # Keep recent history
             for direction in ['E', 'W', 'N', 'S']:
@@ -98,12 +125,50 @@ class OptimizedTrafficController:
             return traffic_data
             
         except Exception as e:
-            print(f"360° Camera error at {intersection}: {e}")
+            print(f"360° Rotating Camera error at {intersection}: {e}")
             return {
                 'E_halting': 0, 'W_halting': 0, 'N_halting': 0, 'S_halting': 0,
                 'E_total': 0, 'W_total': 0, 'N_total': 0, 'S_total': 0,
                 'E_waiting': 0, 'W_waiting': 0, 'N_waiting': 0, 'S_waiting': 0
             }
+    
+    def get_camera_focus(self, angle):
+        """Determine camera focus based on rotation angle (like your diagrams)"""
+        angle = angle % 360
+        
+        # Define focus quadrants matching your diagram patterns
+        if 315 <= angle or angle < 45:      # 0° ± 45° = East focus (Green area)
+            return 'E', 'N' if angle < 22.5 or angle > 337.5 else 'S'
+        elif 45 <= angle < 135:             # 90° ± 45° = North focus (Green area)
+            return 'N', 'E' if angle < 90 else 'W'
+        elif 135 <= angle < 225:            # 180° ± 45° = West focus (Green area)
+            return 'W', 'N' if angle < 180 else 'S'
+        elif 225 <= angle < 315:            # 270° ± 45° = South focus (Green area)
+            return 'S', 'W' if angle < 270 else 'E'
+        
+        return 'E', 'N'  # Default
+    
+    def calculate_camera_visibility(self, direction, primary, secondary):
+        """Calculate visibility factor based on camera focus (like your diagrams)"""
+        if direction == primary:
+            return 1.0      # Full visibility - Green area in your diagram
+        elif direction == secondary:
+            return 0.75     # Good visibility - Blue area in your diagram
+        else:
+            return 0.25     # Limited visibility - Outside focus areas
+    
+    def get_quadrant_name(self, angle):
+        """Get readable quadrant name for the angle"""
+        angle = angle % 360
+        if 315 <= angle or angle < 45:
+            return "East Quadrant"
+        elif 45 <= angle < 135:
+            return "North Quadrant"
+        elif 135 <= angle < 225:
+            return "West Quadrant"
+        elif 225 <= angle < 315:
+            return "South Quadrant"
+        return "East Quadrant"
     
     def calculate_direction_waiting_time(self, detectors):
         """Calculate average waiting time for a specific direction"""
@@ -175,18 +240,15 @@ class OptimizedTrafficController:
         return 0
     
     def optimized_traffic_control(self, step, tls_j1_id, tls_j2_id, metrics):
-        """OPTIMIZED traffic control logic for realistic traffic scenarios"""
+        """OPTIMIZED traffic control logic with ROTATING CAMERAS"""
         
-        # High-speed camera data collection
-        if step % self.camera_rotation_speed == 0:
-            j1_data = self.get_360_camera_data('J1', step)
-            j2_data = self.get_360_camera_data('J2', step)
-        else:
-            return  # Skip non-camera steps
+        # ROTATING CAMERA data collection every step for smooth rotation
+        j1_data = self.get_360_camera_data('J1', step)
+        j2_data = self.get_360_camera_data('J2', step)
         
-        # Update phase timers
-        self.j1_phase_timer += self.camera_rotation_speed
-        self.j2_phase_timer += self.camera_rotation_speed
+        # Update phase timers every step
+        self.j1_phase_timer += 1
+        self.j2_phase_timer += 1
         
         # OPTIMIZED LOGIC FOR INTERSECTION 1 (J1)
         current_j1_phase = traci.trafficlight.getPhase(tls_j1_id)
@@ -388,14 +450,24 @@ class TrafficMetrics:
 def run_optimized_simulation():
     """Run the optimized simulation with realistic traffic"""
     
-    print("OPTIMIZED SUMO SIMULATION - 500 HOUR REALISTIC TRAFFIC")
+    print("OPTIMIZED SUMO SIMULATION - 500 HOUR REALISTIC TRAFFIC - FASTER CAMERAS")
     print("=" * 70)
-    print("Features: Realistic 360 veh/hour + Optimized Controller")
-    print("Simulation Duration: 500 HOURS (1,800,000 steps)")
+    print("Features: TRUE 360° ROTATING CAMERAS + Optimized Controller")
+    print("Simulation Duration: 24 HOURS (86,400 steps)")
+    print("SIMULATION SPEED: NORMAL (Same as Baseline)")
+    print("   • Simulation Delay: Default (~100ms)")
+    print("   • Camera Rotation: 10°/step (faster rotation)")
+    print("   • Normal Traffic Light Timing")
+    print("🎥 ROTATING CAMERA SYSTEM:")
+    print("   • J1 Camera: Starts at 0° (East focus)")
+    print("   • J2 Camera: Starts at 180° (West focus)")
+    print("   • Rotation Speed: 10° per step (faster rotation)")
+    print("   • Field of View: 90° with focus areas")
     print("Enhanced Parameters:")
-    print("   • Min Green Time: 20 seconds (vs 5s)")
-    print("   • Congestion Threshold: 18 vehicles (vs 8)")
-    print("   • Emergency Threshold: 25 vehicles (new)")
+    print("   • Min Green Time: 20 seconds (normal timing)")
+    print("   • Max Green Time: 90 seconds (normal cycles)")
+    print("   • Congestion Threshold: 18 vehicles")
+    print("   • Emergency Threshold: 25 vehicles")
     print("   • Enhanced Coordination & Queue Clearing")
     print("=" * 70)
     
@@ -403,9 +475,9 @@ def run_optimized_simulation():
     controller = OptimizedTrafficController()
     metrics = TrafficMetrics()
     
-    # Start SUMO with realistic traffic for 500 hours
+    # Start SUMO with GUI for visual rotation monitoring - SAME SPEED AS BASELINE
     try:
-        traci.start(["sumo", "-c", "KCCIntersection_optimized.sumocfg",
+        traci.start(["sumo-gui", "-c", "KCCIntersection_optimized.sumocfg",
                     "--start", "--quit-on-end"])
     except Exception as e:
         print(f"SUMO startup error: {e}")
@@ -439,26 +511,32 @@ def run_optimized_simulation():
         print("Starting optimized traffic control simulation...")
         step = 0
         
-        while step < 1800000:  # 500 hours = 1,800,000 steps (continue regardless of vehicle count)
+        while step < 86400:  # 24 hours = 86,400 steps (continue regardless of vehicle count)
             step += 1
             traci.simulationStep()
             
             # Run optimized traffic control
             controller.optimized_traffic_control(step, TLS_ID_J1, TLS_ID_J2, metrics)
             
-            # Collect metrics every 10 steps
+            # Collect metrics every 10 steps (normal simulation speed)
             if step % 10 == 0:
                 metrics.collect_step_metrics(step, TLS_ID_J1, TLS_ID_J2)
             
-            # Progress reporting
-            if step % 3600 == 0:  # Every hour (3600 steps = 1 hour)
+            # Progress reporting with camera rotation status - NORMAL UPDATES
+            if step % 3600 == 0:  # Every hour (normal reporting frequency)
                 vehicles = traci.simulation.getMinExpectedNumber()
                 j1_phase = traci.trafficlight.getPhase(TLS_ID_J1)
                 j2_phase = traci.trafficlight.getPhase(TLS_ID_J2) if TLS_ID_J2 is not None else -1
                 j1_queue = metrics.calculate_queue_length('J1')
                 j2_queue = metrics.calculate_queue_length('J2')
                 hour = step // 3600
+                
+                # Camera rotation status
+                j1_quadrant = controller.get_quadrant_name(controller.j1_camera_angle)
+                j2_quadrant = controller.get_quadrant_name(controller.j2_camera_angle)
+                
                 print(f"Hour {hour:3d} | Step {step:7d} | Vehicles: {vehicles:3d} | J1 Queue: {j1_queue:2d} | J2 Queue: {j2_queue:2d}")
+                print(f"        🎥 J1 Camera: {controller.j1_camera_angle:.1f}° ({j1_quadrant}) | J2 Camera: {controller.j2_camera_angle:.1f}° ({j2_quadrant})")
 
     except KeyboardInterrupt:
         print("\nSimulation stopped by user")

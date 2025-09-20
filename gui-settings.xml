@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viewsettings>
+    <viewport zoom="100.00" x="0.00" y="0.00" angle="0.00"/>
+    <delay value="100.00"/>
+    <decal file="" centerX="0.00" centerY="0.00" centerZ="0.00" width="0.00" height="0.00" altitude="0.00" rotation="0.00" tilt="0.00" roll="0.00" layer="0.00" imgFile=""/>
+    <time value="0.00"/>
+    <scheme name="real world"/>
+    <background backgroundColor="0.73,0.73,0.73" showGrid="0" gridXSize="100.00" gridYSize="100.00"/>
+    <edge>
+        <edge id="" color="0.00,0.00,0.00" width="0.50"/>
+    </edge>
+    <junction>
+        <junction id="" color="0.00,0.00,0.00" colorMode="0"/>
+    </junction>
+    <person>
+        <person id="" color="0.00,0.00,0.00" colorMode="0" shapeMode="0" scaleSize="1.00"/>
+    </person>
+    <vehicle>
+        <vehicle id="" color="0.00,0.00,0.00" colorMode="0" shapeMode="0" scaleSize="1.00"/>
+    </vehicle>
+    <polygons>
+        <polygon id="" color="0.00,0.00,0.00" layer="0.00" lineWidth="1.00"/>
+    </polygons>
+    <poi>
+        <poi id="" color="0.00,0.00,0.00" layer="0.00" lineWidth="1.00"/>
+    </poi>
+    <legend showAs="0"/>
+</viewsettings>

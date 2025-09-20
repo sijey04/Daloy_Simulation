@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    
+    <!-- IMPROVED TRAFFIC LIGHT PROGRAMS -->
+    
+    <!-- J1 Intersection - Smoother Transitions -->
+    <tlLogic id="1017322684" type="static" programID="improved" offset="0">
+        <!-- Phase 0: East-West Green with longer duration -->
+        <phase duration="45" state="rrrGggGGgGGgrrrGgg"/>
+        <!-- Phase 1: East-West Yellow with adequate warning -->
+        <phase duration="5" state="rrryyyyyyyyyrrryyy"/>
+        <!-- Phase 2: North-South Green -->
+        <phase duration="40" state="GGGrrrrrrrrrGGGrrr"/>
+        <!-- Phase 3: North-South Yellow -->
+        <phase duration="5" state="yyyrrrrrrrrryyyrrr"/>
+    </tlLogic>
+    
+    <!-- J2 Intersection - Coordinated Timing -->
+    <tlLogic id="1017322720" type="static" programID="improved" offset="50">
+        <!-- Phase 0: East-West Green (offset for coordination) -->
+        <phase duration="45" state="GGggGGGgrrrr"/>
+        <!-- Phase 1: East-West Yellow -->
+        <phase duration="5" state="yyyyyyyyrrrr"/>
+        <!-- Phase 2: North-South Green -->
+        <phase duration="40" state="rrrrrrrrGGGG"/>
+        <!-- Phase 3: North-South Yellow -->
+        <phase duration="5" state="rrrrrrrryyyy"/>
+    </tlLogic>
+    
+</additional>
