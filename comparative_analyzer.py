@@ -262,30 +262,51 @@ class ComparativeTrafficAnalyzer:
         return base_travel_time + df['Network_Delay'].mean()
     
     def _calculate_throughput(self, df):
-        """Calculate network throughput (vehicles processed per hour)"""
+        """Calculate network throughput (vehicles processed per hour).
+        
+        With the same route file, a system that keeps fewer vehicles in the
+        network is clearing them faster = higher real throughput.
+        
+        Throughput ≈ InputRate / AvgNetworkTime.  Since both systems share the
+        same input demand, shorter network time → higher throughput.
+        
+        We use: throughput = demand_rate * clearance_efficiency
+        where clearance_efficiency = base_travel / (base_travel + avg_delay)
+        """
         if len(df) == 0:
             return 0
         
-        # For gridlocked systems with massive vehicle accumulation,
-        # throughput should reflect actual traffic flow, not vehicle pile-up
         df_sorted = df.sort_values('Step')
-        
-        # Calculate the effective flow rate based on queue dynamics
-        # If queues are constantly growing, actual throughput is very low
         avg_vehicles = df_sorted['Vehicles'].mean()
-        avg_queue = df_sorted.get('Total_Queue', pd.Series([0])).mean()
+        avg_delay = df_sorted.get('Network_Delay', pd.Series([0.0])).mean()
         
-        # Realistic throughput calculation:
-        # High vehicle counts with high queues = gridlock = low actual throughput
-        if avg_vehicles > 1000:  # Gridlock scenario
-            # Use queue efficiency as throughput measure
-            queue_efficiency = max(0.01, 1 - (avg_queue / avg_vehicles))
-            realistic_throughput = avg_vehicles * queue_efficiency * 0.1  # Very low flow rate
-        else:  # Normal flow scenario
-            # Use average vehicles as flow capacity proxy
-            realistic_throughput = avg_vehicles * 10  # More reasonable hourly rate
+        if avg_vehicles == 0:
+            return 0
         
-        return realistic_throughput
+        # Estimate input rate: total vehicle arrivals over the time window
+        # With periodic vehicle batches, estimate ~20 new vehicles every ~210 steps
+        # from the route file pattern visible in the CSV data
+        time_span = df_sorted['Step'].max() - df_sorted['Step'].min()
+        if time_span <= 0:
+            return 0
+        
+        # Base travel time without congestion (seconds)
+        base_travel = 60.0
+        
+        # Clearance efficiency: how quickly vehicles pass through
+        # 1.0 = no delay (instant flow), approaches 0 as delay grows
+        clearance_efficiency = base_travel / (base_travel + avg_delay)
+        
+        # Throughput = flow capacity * clearance efficiency
+        # Estimate flow capacity from peak observed vehicles * 3600 / avg_presence_time
+        avg_presence_time = base_travel + avg_delay  # seconds a vehicle stays in network
+        
+        # With Little's Law: throughput = avg_vehicles_in_system / avg_time_in_system
+        # This gives vehicles/second; multiply by 3600 for vehicles/hour
+        throughput_per_sec = avg_vehicles / max(avg_presence_time, 1.0)
+        throughput_per_hour = throughput_per_sec * 3600
+        
+        return throughput_per_hour
     
     def _calculate_congestion_index(self, df):
         """Calculate congestion index based on queue length relative to vehicle count"""
@@ -426,21 +447,40 @@ class ComparativeTrafficAnalyzer:
         
         print("\nOVERALL PERFORMANCE IMPACT:")
         print("-" * 50)
-        total_improvement = (abs(results['improvements']['queue_reduction']) + 
-                           abs(results['improvements']['delay_reduction']) +
-                           abs(results['improvements']['travel_time_improvement']) +
-                           abs(results['improvements']['co2_reduction'])) / 4
-        print(f"  • Comprehensive Performance Improvement: {total_improvement:.1f}%")
         
-        # Performance categories
-        if total_improvement > 30:
-            print("  • Status: EXCEPTIONAL IMPROVEMENT")
-        elif total_improvement > 15:
-            print("  • Status: SIGNIFICANT IMPROVEMENT")
-        elif total_improvement > 5:
-            print("  • Status: MODERATE IMPROVEMENT")
+        # Count how many metrics improved vs degraded
+        metric_results = {
+            'Queue Reduction': results['improvements']['queue_reduction'],
+            'Delay Reduction': results['improvements']['delay_reduction'],
+            'Travel Time': results['improvements']['travel_time_improvement'],
+            'Throughput': results['improvements']['throughput_improvement'],
+            'CO2 Reduction': results['improvements']['co2_reduction'],
+        }
+        
+        improved = sum(1 for v in metric_results.values() if v > 0)
+        degraded = sum(1 for v in metric_results.values() if v < 0)
+        
+        for name, val in metric_results.items():
+            status = "BETTER" if val > 0 else "WORSE" if val < 0 else "SAME"
+            print(f"  [{status:6s}] {name}: {val:+.1f}%")
+        
+        # Use SIGNED values (not abs!) for honest overall score
+        total_improvement = sum(metric_results.values()) / len(metric_results)
+        print(f"\n  Overall Net Improvement: {total_improvement:+.1f}%")
+        print(f"  Metrics Improved: {improved}/{len(metric_results)}")
+        print(f"  Metrics Degraded: {degraded}/{len(metric_results)}")
+        
+        # Performance categories based on honest scoring
+        if total_improvement > 20 and degraded == 0:
+            print("  Status: EXCEPTIONAL IMPROVEMENT")
+        elif total_improvement > 10 and degraded <= 1:
+            print("  Status: SIGNIFICANT IMPROVEMENT")
+        elif total_improvement > 0:
+            print("  Status: MODERATE IMPROVEMENT (some metrics degraded)")
+        elif total_improvement > -10:
+            print("  Status: MIXED RESULTS (needs further tuning)")
         else:
-            print("  • Status: MINIMAL IMPROVEMENT")
+            print("  Status: AI UNDERPERFORMING BASELINE (needs fixes)")
         
         print("="*80)
     
@@ -669,37 +709,58 @@ class ComparativeTrafficAnalyzer:
             
             f.write("KEY FINDINGS\n")
             f.write("-"*40 + "\n")
-            total_improvement = (abs(results['improvements']['queue_reduction']) + 
-                               abs(results['improvements']['delay_reduction']) +
-                               abs(results['improvements']['travel_time_improvement']) +
-                               abs(results['improvements']['co2_reduction'])) / 4
-            f.write(f"• Comprehensive System Improvement: {total_improvement:.1f}%\n")
             
-            if total_improvement > 30:
-                f.write("• Performance Classification: EXCEPTIONAL IMPROVEMENT\n")
-                f.write("• Recommendation: AI system provides outstanding benefits - immediate implementation recommended\n")
-            elif total_improvement > 15:
-                f.write("• Performance Classification: SIGNIFICANT IMPROVEMENT\n")
-                f.write("• Recommendation: AI system provides substantial benefits - strong case for implementation\n")
-            elif total_improvement > 5:
-                f.write("• Performance Classification: MODERATE IMPROVEMENT\n")
-                f.write("• Recommendation: AI system shows clear benefits - consider implementation\n")
+            # Honest overall scoring using SIGNED values (not abs!)
+            metric_results = {
+                'Queue Reduction': results['improvements']['queue_reduction'],
+                'Delay Reduction': results['improvements']['delay_reduction'],
+                'Travel Time': results['improvements']['travel_time_improvement'],
+                'Throughput': results['improvements']['throughput_improvement'],
+                'CO2 Reduction': results['improvements']['co2_reduction'],
+            }
+            improved = sum(1 for v in metric_results.values() if v > 0)
+            degraded = sum(1 for v in metric_results.values() if v < 0)
+            total_improvement = sum(metric_results.values()) / len(metric_results)
+            
+            f.write(f"Overall Net Improvement: {total_improvement:+.1f}%\n")
+            f.write(f"Metrics Improved: {improved}/{len(metric_results)}\n")
+            f.write(f"Metrics Degraded: {degraded}/{len(metric_results)}\n\n")
+            
+            for name, val in metric_results.items():
+                status = "BETTER" if val > 0 else "WORSE" if val < 0 else "SAME"
+                f.write(f"  [{status}] {name}: {val:+.1f}%\n")
+            
+            f.write("\n")
+            if total_improvement > 20 and degraded == 0:
+                f.write("Performance Classification: EXCEPTIONAL IMPROVEMENT\n")
+                f.write("Recommendation: AI system provides outstanding benefits - immediate implementation recommended\n")
+            elif total_improvement > 10 and degraded <= 1:
+                f.write("Performance Classification: SIGNIFICANT IMPROVEMENT\n")
+                f.write("Recommendation: AI system provides substantial benefits - strong case for implementation\n")
+            elif total_improvement > 0:
+                f.write("Performance Classification: MODERATE IMPROVEMENT\n")
+                f.write("Recommendation: AI system shows improvement but some areas need tuning\n")
+            elif total_improvement > -10:
+                f.write("Performance Classification: MIXED RESULTS\n")
+                f.write("Recommendation: AI system needs parameter tuning before deployment\n")
             else:
-                f.write("• Performance Classification: MINIMAL IMPROVEMENT\n")
-                f.write("• Recommendation: Consider cost-benefit analysis before implementation\n")
+                f.write("Performance Classification: UNDERPERFORMING BASELINE\n")
+                f.write("Recommendation: AI system needs significant fixes before deployment\n")
             
             f.write(f"\nDETAILED PERFORMANCE SUMMARY:\n")
-            f.write(f"• Queue Length Reduction: {results['improvements']['queue_reduction']:.1f}%\n")
-            f.write(f"• Vehicle Delay Reduction: {results['improvements']['delay_reduction']:.1f}%\n")
-            f.write(f"• Travel Time Improvement: {results['improvements']['travel_time_improvement']:.1f}%\n")
-            f.write(f"• Network Throughput Increase: {results['improvements']['throughput_improvement']:.1f}%\n")
-            f.write(f"• CO2 Emissions Reduction: {results['improvements']['co2_reduction']:.1f}%\n")
+            f.write(f"  Queue Length Reduction: {results['improvements']['queue_reduction']:+.1f}%\n")
+            f.write(f"  Vehicle Delay Reduction: {results['improvements']['delay_reduction']:+.1f}%\n")
+            f.write(f"  Travel Time Improvement: {results['improvements']['travel_time_improvement']:+.1f}%\n")
+            f.write(f"  Network Throughput: {results['improvements']['throughput_improvement']:+.1f}%\n")
+            f.write(f"  CO2 Emissions Reduction: {results['improvements']['co2_reduction']:+.1f}%\n")
             
-            f.write(f"\n• The optimized AI system demonstrates measurable improvements across all key metrics\n")
-            f.write(f"• Environmental benefits include reduced emissions and improved fuel efficiency\n")
-            f.write(f"• Efficiency gains translate to time savings and reduced driver frustration\n")
-            f.write(f"• J2 benefits significantly from AI coordination despite no physical signals\n")
-            f.write(f"• Real-world implementation should consider these comprehensive performance gains\n")
+            f.write(f"\nNOTES:\n")
+            if degraded > 0:
+                f.write(f"  WARNING: {degraded} metric(s) show degradation vs baseline.\n")
+                f.write(f"  The AI controller parameters may need further tuning.\n")
+            else:
+                f.write(f"  All metrics show improvement over the fixed-time baseline.\n")
+            f.write(f"  J2 benefits from AI coordination despite no physical signals.\n")
             
             f.write("\n" + "="*80 + "\n")
             f.write("FILES GENERATED:\n")

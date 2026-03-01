@@ -1,7 +1,7 @@
 ================================================================================
 OPTIMIZED AI vs BASELINE TRAFFIC CONTROL COMPARISON REPORT
 Zamboanga KCC Intersection Study
-Report Generated: 2025-09-21 00:50:52
+Report Generated: 2026-03-01 23:43:49
 ================================================================================
 
 STUDY OVERVIEW
@@ -13,77 +13,85 @@ This analysis compares two traffic management scenarios:
 TRAFFIC FLOW ANALYSIS
 ----------------------------------------
 Average Vehicles in Network:
-  • Optimized AI System: 198.6 vehicles
-  • Baseline Real-World: 1026.8 vehicles
-  • Difference: -828.2 vehicles
+  • Optimized AI System: 15.6 vehicles
+  • Baseline Real-World: 16.5 vehicles
+  • Difference: -0.9 vehicles
 
 QUEUE PERFORMANCE ANALYSIS
 ----------------------------------------
-Total Network Queue Reduction: +35.0%
-J1 (Complex) Queue Reduction: +30.8%
-J2 (4-Way) Queue Reduction: +41.7%
+Total Network Queue Reduction: -85.7%
+J1 (Complex) Queue Reduction: -74.6%
+J2 (4-Way) Queue Reduction: -inf%
 
 Detailed Queue Metrics:
-  Optimized Average Queue: 18.65 vehicles
-  Baseline Average Queue: 28.69 vehicles
-  Absolute Reduction: 10.04 vehicles
+  Optimized Average Queue: 1.86 vehicles
+  Baseline Average Queue: 1.00 vehicles
+  Absolute Reduction: -0.86 vehicles
 
 DELAY PERFORMANCE ANALYSIS
 ----------------------------------------
-Network Delay Reduction: +82.4%
-  Optimized Average Delay: 1303.73 seconds
-  Baseline Average Delay: 7426.52 seconds
-  Absolute Reduction: 6122.79 seconds
+Network Delay Reduction: +42.6%
+  Optimized Average Delay: 4.40 seconds
+  Baseline Average Delay: 7.67 seconds
+  Absolute Reduction: 3.27 seconds
 
 EFFICIENCY PERFORMANCE ANALYSIS
 ----------------------------------------
-Travel Time Improvement: +81.8%
-  Optimized Average Travel Time: 1363.7 seconds
-  Baseline Average Travel Time: 7486.5 seconds
-  Time Savings: 6122.8 seconds per trip
+Travel Time Improvement: +4.8%
+  Optimized Average Travel Time: 64.4 seconds
+  Baseline Average Travel Time: 67.7 seconds
+  Time Savings: 3.3 seconds per trip
 
 CONGESTION PERFORMANCE ANALYSIS
 ----------------------------------------
-Throughput Improvement: +1890.0%
-  Optimized Throughput: 1986.3 vehicles/hour
-  Baseline Throughput: 99.8 vehicles/hour
-  Additional Capacity: 1886.5 vehicles/hour
+Throughput Improvement: -0.4%
+  Optimized Throughput: 873.1 vehicles/hour
+  Baseline Throughput: 876.5 vehicles/hour
+  Additional Capacity: -3.4 vehicles/hour
 
 Congestion Index Analysis:
-  Optimized Congestion: 9.4% vehicles queued
-  Baseline Congestion: 2.8% vehicles queued
-  Congestion Reduction: -6.6 percentage points
+  Optimized Congestion: 11.9% vehicles queued
+  Baseline Congestion: 6.1% vehicles queued
+  Congestion Reduction: -5.8 percentage points
 
 ENVIRONMENTAL IMPACT ANALYSIS
 ----------------------------------------
-CO2 Emissions Reduction: +95.8%
-  Optimized Emissions: 169206.3 grams/hour
-  Baseline Emissions: 4018234.1 grams/hour
-  Emission Savings: 3849027.8 grams/hour
+CO2 Emissions Reduction: +6.0%
+  Optimized Emissions: 3158.2 grams/hour
+  Baseline Emissions: 3358.4 grams/hour
+  Emission Savings: 200.2 grams/hour
 
 Fuel Efficiency Analysis:
-  Optimized Efficiency Index: 0.0
-  Baseline Efficiency Index: 0.0
-  Efficiency Improvement: 0.0 points
+  Optimized Efficiency Index: 98.6
+  Baseline Efficiency Index: 98.7
+  Efficiency Improvement: -0.1 points
 
 KEY FINDINGS
 ----------------------------------------
-• Comprehensive System Improvement: 73.8%
-• Performance Classification: EXCEPTIONAL IMPROVEMENT
-• Recommendation: AI system provides outstanding benefits - immediate implementation recommended
+Overall Net Improvement: -6.5%
+Metrics Improved: 3/5
+Metrics Degraded: 2/5
+
+  [WORSE] Queue Reduction: -85.7%
+  [BETTER] Delay Reduction: +42.6%
+  [BETTER] Travel Time: +4.8%
+  [WORSE] Throughput: -0.4%
+  [BETTER] CO2 Reduction: +6.0%
+
+Performance Classification: MIXED RESULTS
+Recommendation: AI system needs parameter tuning before deployment
 
 DETAILED PERFORMANCE SUMMARY:
-• Queue Length Reduction: 35.0%
-• Vehicle Delay Reduction: 82.4%
-• Travel Time Improvement: 81.8%
-• Network Throughput Increase: 1890.0%
-• CO2 Emissions Reduction: 95.8%
+  Queue Length Reduction: -85.7%
+  Vehicle Delay Reduction: +42.6%
+  Travel Time Improvement: +4.8%
+  Network Throughput: -0.4%
+  CO2 Emissions Reduction: +6.0%
 
-• The optimized AI system demonstrates measurable improvements across all key metrics
-• Environmental benefits include reduced emissions and improved fuel efficiency
-• Efficiency gains translate to time savings and reduced driver frustration
-• J2 benefits significantly from AI coordination despite no physical signals
-• Real-world implementation should consider these comprehensive performance gains
+NOTES:
+  WARNING: 2 metric(s) show degradation vs baseline.
+  The AI controller parameters may need further tuning.
+  J2 benefits from AI coordination despite no physical signals.
 
 ================================================================================
 FILES GENERATED:
